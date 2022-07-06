@@ -22,7 +22,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS'); // Permet d'envoyer des requêtes avec les méthodes mentionnées ( GET ,POST , etc.).
     next();
 });
-//app.use('/images', express.static(path.join(__dirname, 'images'))); // Cela indique à Express qu'il faut gérer la ressource images de manière statique (un sous-répertoire de notre répertoire de base, __dirname ) à chaque fois qu'elle reçoit une requête vers la route /images .
+app.use('/images', express.static(path.join(__dirname, 'images'))); // Cela indique à Express qu'il faut gérer la ressource images de manière statique (un sous-répertoire de notre répertoire de base, __dirname ) à chaque fois qu'elle reçoit une requête vers la route /images .
 
 //app.use('/api/sauces', saucesRoutes); // Le début de la route est défini juste ici
 app.use('/api/auth', userRoutes);
