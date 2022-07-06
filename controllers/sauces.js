@@ -23,3 +23,10 @@ exports.getAllSauce = (req, res, next) => {
     })
     .catch(error => res.status(404).json({ error : error }))
 }
+
+exports.getOneSauce = (req, res, next ) => {
+    Sauce.findOne({ _id: req.params.id }) // La méthode findOne() dans notre modèle sauce pour trouver la sauce unique ayant le même _id que le paramètre de la requête
+    .then(sauce => res.status(200).json(sauce))
+    .catch(error => res.status(404).json({ error }));
+};
+
