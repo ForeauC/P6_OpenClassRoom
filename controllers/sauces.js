@@ -15,3 +15,11 @@ exports.createSauce = (req, res, next) => {
     .catch(error => {
         res.status(400).json({ error : error })});
 };
+
+exports.getAllSauce = (req, res, next) => {
+    Sauce.find()
+    .then(sauces => {
+        return res.status(200).json( sauces );
+    })
+    .catch(error => res.status(404).json({ error : error }))
+}
