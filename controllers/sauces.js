@@ -30,3 +30,32 @@ exports.getOneSauce = (req, res, next ) => {
     .catch(error => res.status(404).json({ error }));
 };
 
+exports.modifySauce = (req, res, next) => {
+    const sauceObject = req.file ? // Dans cette version modifiée de la fonction, on crée un objet sauceObject qui regarde si req.file existe ou non. S'il existe, on traite la nouvelle image ; s'il n'existe pas, on traite simplement l'objet entrant. On crée ensuite une instance sauce à partir de sauceObject , puis on effectue la modification.
+    {
+        ...JSON.parse(req.body.sauce), // JSON.parse() transforme un objet stringifié en Object JavaScript exploitable.
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    }   : {...req.body};
+    Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+    .then(() => res.status(200).json({ message: 'Sauce modifié avec succés' }))
+    .catch(error => res.status(400).json({ error: error }));
+};
+
+exports.deleteSauce = (req, res, next) => {
+    Sauce.findOne({ _id: req.params.id }) // On trouve l'objet dans la BDD
+    .then(sauce => {
+        if (!sauce) {
+            res.status(404).json({ error: new Error('No such Thing!') });
+        }
+        if (sauce.userId !== req.auth.userId) {
+            res.status(400).json({ error: new Error('Unauthorized request!') });
+        } 
+      const filename = sauce.imageUrl.split('/images/')[1]; // Une fois trouvé, on extrait le nom du fichier à supprimer
+      fs.unlink(`images/${filename}`, () => { // On le supprime avec fs.unlink
+        Sauce.deleteOne({ _id: req.params.id })
+            .then(() => res.status(204).json({ message: 'Objet supprimé !'}))
+            .catch(error => res.status(400).json({ error }));
+            });
+        })
+    .catch(error => res.status(400).json({ error }));
+};
