@@ -59,3 +59,33 @@ exports.deleteSauce = (req, res, next) => {
         })
     .catch(error => res.status(400).json({ error }));
 };
+
+exports.getLikes = (req, res, next) => {
+    sauce.findOne({ _id : req.params.id })
+    .then (sauce => {
+        //like pour la premier fois
+        if(!sauce.usersLiked.includes(req.body.userId) && req.body.like === 1) { // fonction inverse "!" si l'userId à déja like false sinon true , utilisation de la méthode includes qui permet de déterminer si un tableau contient une valeur et renvoie true si c'est le cas, false sinon
+            sauce.likes += 1;
+            sauce.usersLiked.push(req.body.userId);
+        // annuler un like  
+        } else if (sauce.usersLiked.includes(req.body.userId) && req.body.like === 0) { 
+            sauce.likes -= 1; 
+            let userKey = sauce.usersLiked.indexOf(req.body.userId) // la méthode indexOf() permet d'obtnir l'index de l'élément sur lequel nous sommes actuellement
+            sauce.usersLiked.splice(userKey, 1); // La méthode spilce() change le contenu d'un tableau en supprimant ou en ajoutant des éléments. Ici, nous supprimons le premier élément qui commence par "userKey"
+        // pour la première fois
+        } else if (!sauce.usersDisliked.includes(req.body.userId) && req.body.like === -1) {
+            sauce.dislikes += 1;
+            sauce.usersDisliked.push(req.body.userId);
+        // Annuler un dislike
+        } else if (sauce.usersDisliked.includes(req.body.userId) && req.body.like === 0) {
+            sauce.dislikes -= 1 ;
+            let userKey = sauce.usersDisliked.indexOf(req.body.userId) 
+            sauce.usersDisliked.splice(userKey, 1); 
+        }
+        Sauce.updateOne({ _id: req.params.id }, { likes: sauce.likes, usersLiked: sauce.usersLiked, dislikes: sauce.dislikes, usersDisliked: sauce.usersDisliked })
+        // La méthode updateOne() permet de mettre à jour un un document MongoDB qui satifait les conditions ( filter, update, option)
+        .then(() => res.status(200).json({ message: 'Sauce updated successfully!'}))
+        .catch(error => res.status(400).json({ error: error })); 
+    })
+    .catch(error =>res.status(500).json({ error : error }))
+}

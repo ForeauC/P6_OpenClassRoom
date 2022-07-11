@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const app = express(); // Permet de créer une application express
 const saucesRoutes = require('./routes/sauces');
 const userRoutes = require('./routes/user');
-const path = require('path'); // The path module provides utilities for working with file and directory paths.
+const path = require('path'); // Le module path fournit des utilitaires pour travailler avec les chemins de fichiers et de répertoires.
 
 
 // Connexion à la base de données MongoDB
