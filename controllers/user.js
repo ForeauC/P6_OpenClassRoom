@@ -36,7 +36,7 @@ exports.login = (req, res, next) => {
                     userId: user._id,
                     token: jwt.sign( // À l'intérieur nous dictons les données que nous souhaitons encoder dans ce toker (payload).
                         { userId: user._id }, // Données que l'on veut encoder -> payload. Le UserId est encodé car on ne veut pas qu'un user soit en capacité de modifier les informations d'un autres UserId.
-                        'RANDOM_TOKEN_SECRET', // Clef secrete pour l'encodage. En production, on utiliserait une chaîne de caractère beaucoup plus longue et aléatoire.
+                        'pGMxeYRlo4cRcsvjMYhp', // Clef secrete pour l'encodage. En production, on utiliserait une chaîne de caractère beaucoup plus longue et aléatoire.
                         { expiresIn : '24h' } // Configuration : chaque Token durera 24h
                     )
                 });
