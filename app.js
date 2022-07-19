@@ -1,10 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const app = express(); // Permet de créer une application express
 const saucesRoutes = require('./routes/sauces');
 const userRoutes = require('./routes/user');
 const path = require('path'); // Le module path fournit des utilitaires pour travailler avec les chemins de fichiers et de répertoires.
+const helmet = require("helmet"); // Helmet aide à protéger votre application de certaines des vulnérabilités bien connues du Web en configurant de manière appropriée des en-têtes HTTP.
+const mongoSanitize = require('express-mongo-sanitize');
 
+const app = express(); // Permet de créer une application express
 
 // Connexion à la base de données MongoDB
 mongoose.connect('mongodb+srv://ForeauC:Terminator91@cluster0.dnpnwsc.mongodb.net/?retryWrites=true&w=majority',
@@ -26,4 +28,8 @@ app.use('/images', express.static(path.join(__dirname, 'images'))); // Cela indi
 
 app.use('/api/sauces', saucesRoutes); // Le début de la route est défini juste ici
 app.use('/api/auth', userRoutes);
+
+app.use(helmet());
+app.use(mongoSanitize());
+
 module.exports = app; // Exportation de la const "app" pour y acceder depuis les autres fichiers du projet
